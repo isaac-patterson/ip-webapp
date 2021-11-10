@@ -1,10 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import "./Drawer.css";
-import {
-    ORDERS_PAGE,
-    EDIT_RESTAURANT_PAGE,
-    EDIT_COUPONS_PAGE
-} from "../../constants/RouteConstants";
 import { PrivateRoute } from '../../helperFunctions/privateRoute';
 import { Switch, useRouteMatch, useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify"
@@ -80,8 +75,8 @@ const BiteDrawer: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [failureSnackBar, setFailureSnackBar] = useState<boolean>(false)
-    const firstSectionItems = [ORDERS_PAGE];
-    const secondSectionItems = [EDIT_RESTAURANT_PAGE, EDIT_COUPONS_PAGE];
+    // const firstSectionItems = [ORDERS_PAGE];
+    // const secondSectionItems = [EDIT_RESTAURANT_PAGE];
 
     let history = useHistory();
     let { url } = useRouteMatch();
@@ -154,7 +149,7 @@ const BiteDrawer: React.FC = () => {
 
                     <Divider />
 
-                    <List>
+                    {/* <List>
                         {addSideBarItems(firstSectionItems)}
                     </List>
 
@@ -162,7 +157,7 @@ const BiteDrawer: React.FC = () => {
 
                     <List>
                         {addSideBarItems(secondSectionItems)}
-                    </List>
+                    </List> */}
 
                     <div className={classes.signOutButton}>
                         <BiteButton
@@ -176,21 +171,16 @@ const BiteDrawer: React.FC = () => {
 
                 <main className={classes.content}>
                     <Switch>
-                        <PrivateRoute
+                        {/* <PrivateRoute
                             path={`${url}/${ORDERS_PAGE.path}`}
                             component={ORDERS_PAGE.component}
-                            children={null}
-                        />
-                        <PrivateRoute
-                            path={`${url}/${EDIT_COUPONS_PAGE.path}`}
-                            component={EDIT_COUPONS_PAGE.component}
                             children={null}
                         />
                         <PrivateRoute
                             path={`${url}/${EDIT_RESTAURANT_PAGE.path}`}
                             component={EDIT_RESTAURANT_PAGE.component}
                             children={null}
-                        />
+                        /> */}
                     </Switch>
                 </main>
             </div>
