@@ -1,0 +1,12 @@
+Buy domain from unstoppabledomains.com
+Claim domain into ethereum wallet
+Build website, put onto efs
+
+
+
+website attributes
+ - read in any language
+ - be decentralised
+ - be on .crypto and .com
+ - be on its own dns system
+ - website templates, connected to lambdas. Pay on use.

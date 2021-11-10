@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Root stack for ip-webapp
+
+Parameters:
+  ENVIRONMENT:
+    Type: String
+
+Resources:
+  IPWebAppStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: generic-website-stack.yaml
+      Parameters:
+        StackName: !Sub 'ip-webapp-${ENVIRONMENT}' 
+        ENVIRONMENT: !Ref ENVIRONMENT
+        AwsCertificateArn: #TODO manually register cert for domain
+        S3BucketName: ip-webapp
+        Domain: #TODO Buy Domains
+        Route53HostedZoneName: #Should be the same as the domain
+        CloudFrontPriceClass: PriceClass_All

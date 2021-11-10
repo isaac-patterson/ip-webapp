@@ -1,0 +1,125 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: S3 / Route53 / CloudFront configuration for https website
+
+Parameters:
+  StackName:
+    Type: String
+  ENVIRONMENT:
+    Type: String
+  # Certificates are not included in CloudFormation stacks:
+  AwsCertificateArn:
+    Description:  Certificate must be created before CloudFormation stack so the value is fixed
+    Type: String
+  S3BucketName:
+    Type: String
+  Domain:
+    Type: String
+  Route53HostedZoneName:
+    Type: String
+  CloudFrontPriceClass: 
+    Type: String
+  # CloudFront are hosted in the same HostedZoneId regardless their region:
+  AwsRoute53CloudFrontHostedZoneId:
+    Type: String
+    Default: Z2FDTNDATAQYW2
+    Description: CloudFront resources HostedZoneId
+
+Resources:
+  # Used in the S3 bucket policy to identify the CloudFront resouce which is allowed to access the S3 webapp
+  SiteCloudFrontIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Join ["", [!Ref StackName, !Ref Stage, Origin Access Identity"]]
+
+  # Route53 / CloudFront handle content service so there is no need of a static website hosting configuration. 
+  SiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+
+  # Serves webapp / with CDN / with HTTPS
+  SiteCloudFront:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Aliases: 
+          - !Ref Domain
+        Comment: !Join ["", [!Ref StackName, !Ref Stage]]
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          # Required field
+          ForwardedValues:
+            QueryString: True
+          # This value must match the Origin.Id defined below, under the Origins key
+          TargetOriginId:
+            !Join ["", ["S3-origin-", !Ref S3BucketName]]
+          # Redirects HTTP to HTTPS
+          ViewerProtocolPolicy: redirect-to-https
+        # Entry point
+        DefaultRootObject: index.html
+        # Enabled CloudFront as soon as created
+        Enabled: True
+        HttpVersion: http2
+        IPV6Enabled: True
+        Origins:
+            # Use the regional domain name instead of the global name ({bucket}.s3.amazonaws.com) as S3 content is only available to CloudFront
+          - DomainName: !GetAtt SiteS3Bucket.RegionalDomainName
+            Id: !Join ["", ["S3-origin-", !Ref S3BucketName]]
+            # S3 bucket access restriction: ensure that content is only available through CloudFront
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${SiteCloudFrontIdentity}"
+        PriceClass: !Ref CloudFrontPriceClass
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AwsCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2018 # recommended value if there is no browser support issue
+          SslSupportMethod: sni-only
+
+  # S3 Bucket policy: allows get access to bucket
+  SiteS3BucketBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3BucketName
+      PolicyDocument:
+        Statement:
+          - Action:
+              - "s3:GetObject"
+            Effect: Allow
+            Principal:
+              AWS:
+                !Join [
+                  "",
+                  [
+                    "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ",
+                    !Ref SiteCloudFrontIdentity,
+                  ],
+                ]
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref S3BucketName, "/*"]]
+        Version: "2012-10-17"
+
+  # Expose pretty nice URL
+  SiteRoute53:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt SiteCloudFront.DomainName
+        EvaluateTargetHealth: False
+        HostedZoneId: !Ref AwsRoute53CloudFrontHostedZoneId
+      Comment: !Join ["", [!Ref StackName, " ", !Ref Stage, " Route"]]
+      HostedZoneName: !Ref Route53HostedZoneName
+      Name: !Ref Domain
+      Type: A
+
+Outputs:
+  Route53URL:
+    Value: !Ref SiteRoute53
+    Description: "Site URL"
+  CloudFrontURL:
+    Value: !GetAtt SiteCloudFront.DomainName
+    Description: "SiteCloudFront URL"

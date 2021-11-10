@@ -1,0 +1,62 @@
+containers:
+  alpine-node:
+    build_directory: ./infrastructure/containers/deployment
+    working_directory: /code
+    volumes: 
+      - local: . #copy source code into container
+        container: /code
+      - type: cache #cache node modules to speed up
+        container: /code/node_modules
+        name: node_modules
+    run_as_current_user:
+      enabled: true
+      home_directory: /home/container-user
+    ports:
+      - local: 3000
+        container: 3000
+  
+tasks:
+  setup:
+    description: Install dependencies needed to build and run the application
+    group: yarn
+    run:
+      container: alpine-node
+      command: yarn install
+
+  build:
+    description: Builds the application into ./build
+    group: yarn
+    run:
+      container: alpine-node
+      command: yarn build
+
+  start:
+    description: Runs the application on localhost:3000
+    group: yarn
+    run:
+      container: alpine-node
+      command: yarn start
+
+  #TODO: Setup linter
+  lint:
+    description: Run linting across all source code
+    run:
+      container: alpine-node
+      command: yarn exec prettier -- -c *.ts
+
+  aws-package:
+    description: package to s3, see difference between states of cloudformation
+    group: aws cloudformation package --template-file root-stack.yaml --output-template packaged.yaml --s3-bucket ip-packaged-templates
+
+  aws-deploy:
+    description: deploy from ./build to aws s3
+    group: aws
+    run:
+      container: aws
+      command: aws cloudformation deploy --region $REGION --template-file packaged.yaml --stack-name rootStack --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ENVIRONMENT=$ENVIRONMENT
+      #--capabilities CAPABILITY_NAMED_IAM allows cloudformation to name iam resources
+      environment:
+        ENVIRONMENT: $ENVIRONMENT
+        REGION: $REGION
+        AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+

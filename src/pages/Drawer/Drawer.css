@@ -1,0 +1,27 @@
+ul {
+    list-style-type: none;
+    margin: 10px
+}
+
+li:not(:last-child) {
+    padding-bottom: 10px;
+}
+
+h1 {
+    margin: 0;
+    color: #4D4A49;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+h2 {
+    margin: 0;
+    color: #4D4A49;
+    font-size: 2em;
+}
+
+#underline {
+    position: relative;
+    height: 7px;
+}
+
