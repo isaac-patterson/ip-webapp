@@ -75,7 +75,6 @@ const BiteDrawer: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [failureSnackBar, setFailureSnackBar] = useState<boolean>(false)
-    // const firstSectionItems = [ORDERS_PAGE];
     // const secondSectionItems = [EDIT_RESTAURANT_PAGE];
 
     let history = useHistory();

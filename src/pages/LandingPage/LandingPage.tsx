@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Auth } from 'aws-amplify';
 import { useHistory } from "react-router-dom";
-import { BITE_DRAWER, ORDERS_PAGE } from "../../constants/RouteConstants";
+import { BITE_DRAWER } from "../../constants/RouteConstants";
 
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
@@ -69,8 +69,6 @@ const LandingPage: React.FC = () => {
         setIsLoading(true)
         try {
             await Auth.signIn(username, password)
-            history.push(`${BITE_DRAWER.path}/${ORDERS_PAGE.path}`)
-
         } catch (error) {
             // if (
             //     error.code === "InvalidParameterException" ||

@@ -18,7 +18,6 @@ export const BITE_DRAWER = {
     component: BiteDrawer,
 }
 
-
 export const NOT_FOUND = {
     component: ErrorNotFound,
 
