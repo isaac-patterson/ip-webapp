@@ -1,9 +1,9 @@
 containers:
   alpine-node:
-    build_directory: ./infrastructure/containers/deployment
+    build_directory: ./batect/alpine-node
     working_directory: /code
     volumes: 
-      - local: . #copy source code into container
+      - local: . 
         container: /code
       - type: cache #cache node modules to speed up
         container: /code/node_modules
@@ -43,20 +43,4 @@ tasks:
     run:
       container: alpine-node
       command: yarn exec prettier -- -c *.ts
-
-  aws-package:
-    description: package to s3, see difference between states of cloudformation
-    group: aws cloudformation package --template-file root-stack.yaml --output-template packaged.yaml --s3-bucket ip-packaged-templates
-
-  aws-deploy:
-    description: deploy from ./build to aws s3
-    group: aws
-    run:
-      container: aws
-      command: aws cloudformation deploy --region $REGION --template-file packaged.yaml --stack-name rootStack --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ENVIRONMENT=$ENVIRONMENT
-      #--capabilities CAPABILITY_NAMED_IAM allows cloudformation to name iam resources
-      environment:
-        ENVIRONMENT: $ENVIRONMENT
-        REGION: $REGION
-        AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
 

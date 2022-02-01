@@ -5,7 +5,7 @@ Description: S3 / Route53 / CloudFront configuration for https website
 Parameters:
   StackName:
     Type: String
-  ENVIRONMENT:
+  Environment:
     Type: String
   # Certificates are not included in CloudFormation stacks:
   AwsCertificateArn:
@@ -103,6 +103,11 @@ Resources:
             Resource: !Join ["", ["arn:aws:s3:::", !Ref S3BucketName, "/*"]]
         Version: "2012-10-17"
 
+  SiteHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties: 
+      Name: !Ref Domain
+
   # Expose pretty nice URL
   SiteRoute53:
     Type: AWS::Route53::RecordSet
@@ -112,7 +117,7 @@ Resources:
         EvaluateTargetHealth: False
         HostedZoneId: !Ref AwsRoute53CloudFrontHostedZoneId
       Comment: !Join ["", [!Ref StackName, " ", !Ref Stage, " Route"]]
-      HostedZoneName: !Ref Route53HostedZoneName
+      HostedZoneName: !Ref SiteHostedZone
       Name: !Ref Domain
       Type: A
 

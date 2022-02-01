@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Root stack for ip-webapp
+
+Parameters:
+  Region:
+    Type: String
+  Environment:
+    Type: String
+  ProjectID:
+    Type: String
+
+Resources:
+  IPWebAppStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: generic-website-stack.yaml
+      Parameters:
+        StackName: !Sub 'ip-webapp-${Environment}'
+        Region: !Ref Region
+        Environment: !Ref Environment
+        ProjectID: !Ref ProjectID
+        AwsCertificateArn: arn:aws:acm:us-east-1:695155094410:certificate/90dc4b6c-df39-446c-967d-bb3c60c75661
+        S3BucketName: ip-webapp
+        Domain: isaacpatterson.org
+        Route53HostedZoneName: isaacpatterson.org
+        CloudFrontPriceClass: PriceClass_All
