@@ -1,16 +1,12 @@
 import { RouteProps } from "react-router";
-import { NOT_FOUND, LANDING_PAGE, BITE_DRAWER } from "../constants/RouteConstants";
+import { NOT_FOUND, BITE_DRAWER } from "../constants/RouteConstants";
 
 interface RoutePropsMap {
     [key: string]: RouteProps;
 }
 
 const routes: RoutePropsMap = {
-    landingPage: {
-        path: LANDING_PAGE.path,
-        exact: LANDING_PAGE.exact,
-        component: LANDING_PAGE.component,
-    },
+
     biteDrawer: {
         path: BITE_DRAWER.path,
         exact: BITE_DRAWER.exact,

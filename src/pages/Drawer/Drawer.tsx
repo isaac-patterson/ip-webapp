@@ -1,15 +1,13 @@
 import React, { Fragment, useState } from 'react';
 import "./Drawer.css";
-import { PrivateRoute } from '../../helperFunctions/privateRoute';
 import { Switch, useRouteMatch, useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify"
 
 import { createStyles, makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { TextField, Theme } from '@mui/material';
 import { BiteButton } from '../../components/BiteButton'
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
@@ -68,6 +66,15 @@ const useStyles = makeStyles((theme: Theme) => (
             alignItems: 'center',
             justifyContent: 'center',
         },
+        TextField: {
+            width: "15%",
+            margin: "1%"
+        },
+
+        Button: {
+            width: "15%",
+            margin: "1%",
+        },
     })));
 
 const BiteDrawer: React.FC = () => {
@@ -77,8 +84,27 @@ const BiteDrawer: React.FC = () => {
     const [failureSnackBar, setFailureSnackBar] = useState<boolean>(false)
     // const secondSectionItems = [EDIT_RESTAURANT_PAGE];
 
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+
     let history = useHistory();
     let { url } = useRouteMatch();
+
+    const signIn = async (username, password) => {
+        setIsLoading(true)
+        try {
+            await Auth.signIn(username, password)
+        } catch (error) {
+            // if (
+            //     error.code === "InvalidParameterException" ||
+            //     error.code === "NotAuthorizedException" ||
+            //     (username === "" && password === "")
+            // ) setFailedLoginSnackBar(true)
+            // else setFailureSnackBar(true)
+            console.log('error signing in', error);
+        }
+        setIsLoading(false)
+    }
 
     const signOut = async () => {
         setIsLoading(true)
@@ -157,6 +183,32 @@ const BiteDrawer: React.FC = () => {
                     <List>
                         {addSideBarItems(secondSectionItems)}
                     </List> */}
+
+                <h2>Isaac Patterson</h2>
+
+                
+                <TextField className={classes.TextField}
+                    id="outlined-basic"
+                    label="Email"
+                    onChange={(e) => setUsername(e.target.value)}
+                    value={username}
+                />
+
+                <TextField className={classes.TextField}
+                    id="outlined-password-input"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <BiteButton className={classes.Button}
+                    variant="contained"
+                    onClick={() => { signIn(username, password) }}
+                >
+                    Sign In
+                </BiteButton>
 
                     <div className={classes.signOutButton}>
                         <BiteButton

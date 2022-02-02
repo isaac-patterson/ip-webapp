@@ -3,8 +3,7 @@ import Amplify, { Auth } from 'aws-amplify';
 import awsconfig from '../..//aws-exports';
 import { Provider } from 'react-redux'
 import store from '../../redux/store'
-import { BITE_DRAWER, LANDING_PAGE } from "../../constants/RouteConstants";
-import PrivateRoute from "../../helperFunctions/privateRoute";
+import { BITE_DRAWER } from "../../constants/RouteConstants";
 
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig);
@@ -16,14 +15,9 @@ const App: React.FC = () => {
                 <Switch>
                     {/* {Object.keys(routes).map(key => addRoute(key))} */}
                     <Route
-                        path={LANDING_PAGE.path}
-                        exact={true}
-                        component={LANDING_PAGE.component}
-                    />
-                    <PrivateRoute
                         path={BITE_DRAWER.path}
+                        exact={true}
                         component={BITE_DRAWER.component}
-                        children={null}
                     />
                 </Switch>
             </HashRouter>
