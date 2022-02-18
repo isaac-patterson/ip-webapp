@@ -18,17 +18,14 @@
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true,     
+    "sourceMap": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "noImplicitAny": false
+    "jsx": "react",
+    "noImplicitAny": false, //set to true,
+    "outDir": "./dist/"
   },
   "include": [
     "src"
   ]
 }
-
-
-
-

@@ -1,13 +1,21 @@
 import ErrorNotFound from "../pages/ErrorNotFound/ErrorNotFound";
-import BiteDrawer from "../pages/Drawer/Drawer"
+import PhotosPage from "../pages/Photos/PhotosPage";
+import WritingPage from "../pages/Writing/WritingPage";
 
-
-export const BITE_DRAWER = {
-    name: "biteDrawer",
-    label: "Bite Drawer",
-    path: "/",
+export const WRITING_PAGE = {
+    name: "writingPage",
+    label: "Writing",
+    path: "writing",
     exact: true,
-    component: BiteDrawer,
+    component: WritingPage,
+}
+
+export const PHOTOS_PAGE = {
+    name: "photosPage",
+    label: "Photos",
+    path: "photos",
+    exact: true,
+    component: PhotosPage,
 }
 
 export const NOT_FOUND = {
@@ -15,7 +23,7 @@ export const NOT_FOUND = {
 }
 
 const exports = {
-    BITE_DRAWER, NOT_FOUND
+    WRITING_PAGE, NOT_FOUND, PHOTOS_PAGE
 }
 
 export default exports

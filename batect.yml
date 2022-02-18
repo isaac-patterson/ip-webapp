@@ -1,6 +1,6 @@
 containers:
   alpine-node:
-    build_directory: ./batect/alpine-node
+    build_directory: ./.batect/alpine-node
     working_directory: /code
     volumes: 
       - local: . 
@@ -14,7 +14,17 @@ containers:
     ports:
       - local: 3000
         container: 3000
-  
+
+  alpine-node-ipfs:
+    build_directory: ./.batect/alpine-node-ipfs
+    working_directory: /code
+    volumes: 
+      - local: . 
+        container: /code
+    ports:
+      - "4001:4001"
+      - "8081:8081"
+
 tasks:
   setup:
     description: Install dependencies needed to build and run the application
@@ -36,11 +46,13 @@ tasks:
     run:
       container: alpine-node
       command: yarn start
-
-  #TODO: Setup linter
-  lint:
-    description: Run linting across all source code
+    
+  
+  deploy-ipfs:
+    description: Deploys website to ipfs via pinata
+    group: deployment
+    prerequisites:
+      - build
     run:
-      container: alpine-node
-      command: yarn exec prettier -- -c *.ts
-
+      container: alpine-node-ipfs
+      command: ts-node deploy.ts

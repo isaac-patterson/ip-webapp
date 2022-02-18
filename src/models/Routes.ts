@@ -1,17 +1,20 @@
 import { RouteProps } from "react-router";
-import { NOT_FOUND, BITE_DRAWER } from "../constants/RouteConstants";
+import { NOT_FOUND, WRITING_PAGE, PHOTOS_PAGE } from "../constants/RouteConstants";
 
 interface RoutePropsMap {
     [key: string]: RouteProps;
 }
 
 const routes: RoutePropsMap = {
-
-    biteDrawer: {
-        path: BITE_DRAWER.path,
-        exact: BITE_DRAWER.exact,
-        component: BITE_DRAWER.component,
-
+    writingPage: {
+        path: WRITING_PAGE.path,
+        exact: WRITING_PAGE.exact,
+        component: WRITING_PAGE.component,
+    },
+    photosPage: {
+        path: PHOTOS_PAGE.path,
+        exact: PHOTOS_PAGE.exact,
+        component: PHOTOS_PAGE.component,
     },
     notFound: {
         component: NOT_FOUND.component,
