@@ -28,25 +28,45 @@ containers:
 tasks:
   setup:
     description: Install dependencies needed to build and run the application
-    group: yarn
+    group: Setup
     run:
       container: alpine-node
       command: yarn install
 
-  build:
+  yarn-build:
     description: Builds the application into ./build
     group: yarn
     run:
       container: alpine-node
-      command: yarn build
+      command: yarn react-scripts build
 
-  start:
+  yarn-start:
     description: Runs the application on localhost:3000
     group: yarn
     run:
       container: alpine-node
+      command: yarn react-scripts start
+
+  start:
+    description: Starts webpack application
+    group: yarn
+    run:
+      container: alpine-node
       command: yarn start
-    
+  
+  build:
+    description: Webpack development build
+    group: yarn
+    run:
+      container: alpine-node
+      command: yarn build-dev
+
+  build-prod:
+    description: Webpack production build
+    group: yarn
+    run:
+      container: alpine-node
+      command: yarn build-prod
   
   deploy-ipfs:
     description: Deploys website to ipfs via pinata
